@@ -1,6 +1,8 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/weather_model.dart';
+import '../models/weather.dart';
 import '../models/hourly_forecast_model.dart';
 import '../models/daily_forecast_model.dart';
 import '../services/weather_api_service.dart';
@@ -8,10 +10,9 @@ import '../core/exceptions.dart';
 
 // ------------------------------------------------------------------
 // Abstract interface — ViewModels depend on this, never on the impl.
-// This also makes unit testing easy (mock this, not the real class).
 // ------------------------------------------------------------------
 abstract class WeatherRepository {
-  Future<WeatherModel> getCurrentWeather(String city);
+  Future<Weather> getCurrentWeather(String city);
   Future<List<HourlyForecastModel>> getHourlyForecast(String city);
   Future<List<DailyForecastModel>> getDailyForecast(String city);
 }
@@ -23,11 +24,8 @@ class WeatherRepositoryImpl implements WeatherRepository {
   final WeatherApiService _apiService;
   final SharedPreferences _prefs;
 
-  // Cache keys
   static const String _keyCurrentWeather = 'cached_current_weather';
   static const String _keyLastFetchTime = 'cached_last_fetch_time';
-
-  // Cache lifetime — 30 minutes
   static const Duration _cacheDuration = Duration(minutes: 30);
 
   WeatherRepositoryImpl({
@@ -37,22 +35,21 @@ class WeatherRepositoryImpl implements WeatherRepository {
         _prefs = prefs;
 
   // ----------------------------------------------------------------
-  // Current weather — tries cache first, falls back to API
+  // Current weather — serves from cache if still fresh
   // ----------------------------------------------------------------
   @override
-  Future<WeatherModel> getCurrentWeather(String city) async {
+  Future<Weather> getCurrentWeather(String city) async {
     try {
       if (_isCacheValid()) {
         final cached = _prefs.getString(_keyCurrentWeather);
         if (cached != null) {
-          return WeatherModel.fromJson(_decodeJson(cached));
+          return Weather.fromJson(jsonDecode(cached) as Map<String, dynamic>);
         }
       }
 
       final weather = await _apiService.fetchCurrentWeather(city);
 
-      // Persist to cache
-      _prefs.setString(_keyCurrentWeather, _encodeJson(weather.toJson()));
+      _prefs.setString(_keyCurrentWeather, jsonEncode(weather.toJson()));
       _prefs.setInt(_keyLastFetchTime, DateTime.now().millisecondsSinceEpoch);
 
       return weather;
@@ -64,7 +61,7 @@ class WeatherRepositoryImpl implements WeatherRepository {
   }
 
   // ----------------------------------------------------------------
-  // Hourly forecast — no cache, always fresh
+  // Hourly forecast — always fresh, no cache needed
   // ----------------------------------------------------------------
   @override
   Future<List<HourlyForecastModel>> getHourlyForecast(String city) async {
@@ -78,7 +75,7 @@ class WeatherRepositoryImpl implements WeatherRepository {
   }
 
   // ----------------------------------------------------------------
-  // Daily forecast — no cache, always fresh
+  // Daily forecast — always fresh, no cache needed
   // ----------------------------------------------------------------
   @override
   Future<List<DailyForecastModel>> getDailyForecast(String city) async {
@@ -100,12 +97,5 @@ class WeatherRepositoryImpl implements WeatherRepository {
     final age = DateTime.now()
         .difference(DateTime.fromMillisecondsSinceEpoch(lastFetch));
     return age < _cacheDuration;
-  }
-
-  String _encodeJson(Map<String, dynamic> json) => json.toString();
-
-  Map<String, dynamic> _decodeJson(String raw) {
-    // Replaced with dart:convert in Phase 3 — stub for now
-    return {};
   }
 }
