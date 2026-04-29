@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../models/weather_model.dart';
+import '../models/weather.dart';
 import '../models/hourly_forecast_model.dart';
 import '../models/daily_forecast_model.dart';
 import '../repositories/weather_repository.dart';
@@ -15,16 +15,18 @@ class WeatherViewModel extends ChangeNotifier {
       : _repository = repository;
 
   WeatherStatus _status = WeatherStatus.initial;
-  WeatherModel? _currentWeather;
+  Weather? _currentWeather;
   List<HourlyForecastModel> _hourlyForecast = [];
   List<DailyForecastModel> _dailyForecast = [];
   String _errorMessage = '';
+  int _selectedTabIndex = 0;
 
   WeatherStatus get status => _status;
-  WeatherModel? get currentWeather => _currentWeather;
+  Weather? get currentWeather => _currentWeather;
   List<HourlyForecastModel> get hourlyForecast => _hourlyForecast;
   List<DailyForecastModel> get dailyForecast => _dailyForecast;
   String get errorMessage => _errorMessage;
+  int get selectedTabIndex => _selectedTabIndex;
 
   bool get isLoading => _status == WeatherStatus.loading;
   bool get hasError => _status == WeatherStatus.error;
@@ -42,7 +44,7 @@ class WeatherViewModel extends ChangeNotifier {
         _repository.getDailyForecast(city),
       ]);
 
-      _currentWeather = results[0] as WeatherModel;
+      _currentWeather = results[0] as Weather;
       _hourlyForecast = results[1] as List<HourlyForecastModel>;
       _dailyForecast = results[2] as List<DailyForecastModel>;
       _status = WeatherStatus.success;
@@ -57,6 +59,11 @@ class WeatherViewModel extends ChangeNotifier {
       _status = WeatherStatus.error;
     }
 
+    notifyListeners();
+  }
+
+  void selectTab(int index) {
+    _selectedTabIndex = index;
     notifyListeners();
   }
 
