@@ -7,7 +7,7 @@ import 'core/app_theme.dart';
 import 'repositories/weather_repository.dart';
 import 'services/weather_api_service.dart';
 import 'viewmodels/weather_viewmodel.dart';
-import 'views/screens/home_screen.dart';
+import 'views/screens/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +39,7 @@ class WeatherApp extends StatelessWidget {
         title: 'Weather App',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
-        home: const HomeScreen(),
+        home: const SplashScreen(),
       ),
     );
   }
