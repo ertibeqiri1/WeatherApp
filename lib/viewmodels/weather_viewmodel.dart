@@ -20,6 +20,7 @@ class WeatherViewModel extends ChangeNotifier {
   List<DailyForecastModel> _dailyForecast = [];
   String _errorMessage = '';
   int _selectedTabIndex = 0;
+  String _currentCity = '';
 
   WeatherStatus get status => _status;
   Weather? get currentWeather => _currentWeather;
@@ -27,12 +28,20 @@ class WeatherViewModel extends ChangeNotifier {
   List<DailyForecastModel> get dailyForecast => _dailyForecast;
   String get errorMessage => _errorMessage;
   int get selectedTabIndex => _selectedTabIndex;
+  String get currentCity => _currentCity;
 
   bool get isLoading => _status == WeatherStatus.loading;
   bool get hasError => _status == WeatherStatus.error;
   bool get hasData => _status == WeatherStatus.success;
 
+  Future<void> searchCity(String city) async {
+    final trimmed = city.trim();
+    if (trimmed.isEmpty) return;
+    await loadWeather(trimmed);
+  }
+
   Future<void> loadWeather(String city) async {
+    _currentCity = city;
     _status = WeatherStatus.loading;
     _errorMessage = '';
     notifyListeners();
