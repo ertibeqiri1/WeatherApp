@@ -7,6 +7,7 @@ import '../../viewmodels/weather_viewmodel.dart';
 import '../widgets/daily_item.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/hourly_item.dart';
+import '../widgets/weather_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -43,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: const WeatherDrawer(),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
