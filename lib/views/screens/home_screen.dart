@@ -45,23 +45,34 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       endDrawer: const WeatherDrawer(),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: AppColors.backgroundGradient,
-          ),
-        ),
-        child: SafeArea(
-          child: Consumer<WeatherViewModel>(
-            builder: (context, vm, _) {
-              if (vm.isLoading) return _buildLoading();
-              if (vm.hasError) return _buildError(vm);
-              return _buildContent(vm);
-            },
-          ),
-        ),
+      body: Consumer<WeatherViewModel>(
+        builder: (context, vm, _) {
+          final gradient = vm.currentWeather != null
+              ? WeatherIconHelper.conditionToGradient(
+                  vm.currentWeather!.description)
+              : AppColors.backgroundGradient;
+
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.easeInOut,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: gradient,
+              ),
+            ),
+            child: SafeArea(
+              child: Builder(
+                builder: (_) {
+                  if (vm.isLoading) return _buildLoading();
+                  if (vm.hasError) return _buildError(vm);
+                  return _buildContent(vm);
+                },
+              ),
+            ),
+          );
+        },
       ),
     );
   }
