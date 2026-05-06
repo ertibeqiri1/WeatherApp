@@ -18,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late TabController _tabController;
 
   @override
@@ -44,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       endDrawer: const WeatherDrawer(),
       body: Consumer<WeatherViewModel>(
         builder: (context, vm, _) {
@@ -115,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           const Spacer(),
           GestureDetector(
-            onTap: () => Scaffold.of(context).openEndDrawer(),
+            onTap: () => _scaffoldKey.currentState?.openEndDrawer(),
             child: const Icon(Icons.menu,
                 color: AppColors.textPrimary, size: 26),
           ),
