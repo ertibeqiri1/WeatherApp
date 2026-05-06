@@ -20,7 +20,11 @@ class WeatherViewModel extends ChangeNotifier {
   List<DailyForecastModel> _dailyForecast = [];
   String _errorMessage = '';
   int _selectedTabIndex = 0;
+<<<<<<< HEAD
+  bool _isCelsius = true;
+=======
   String _currentCity = '';
+>>>>>>> a90bf34047682c02e0630c978bc413d45b61cb8f
 
   WeatherStatus get status => _status;
   Weather? get currentWeather => _currentWeather;
@@ -28,16 +32,33 @@ class WeatherViewModel extends ChangeNotifier {
   List<DailyForecastModel> get dailyForecast => _dailyForecast;
   String get errorMessage => _errorMessage;
   int get selectedTabIndex => _selectedTabIndex;
+<<<<<<< HEAD
+  bool get isCelsius => _isCelsius;
+  String get unitLabel => _isCelsius ? '°C' : '°F';
+=======
   String get currentCity => _currentCity;
+>>>>>>> a90bf34047682c02e0630c978bc413d45b61cb8f
 
   bool get isLoading => _status == WeatherStatus.loading;
   bool get hasError => _status == WeatherStatus.error;
   bool get hasData => _status == WeatherStatus.success;
 
+<<<<<<< HEAD
+  /// Converts a Celsius value to the currently selected unit.
+  double convertTemp(double celsius) {
+    if (_isCelsius) return celsius;
+    return (celsius * 9 / 5) + 32;
+  }
+
+  void toggleUnits() {
+    _isCelsius = !_isCelsius;
+    notifyListeners();
+=======
   Future<void> searchCity(String city) async {
     final trimmed = city.trim();
     if (trimmed.isEmpty) return;
     await loadWeather(trimmed);
+>>>>>>> a90bf34047682c02e0630c978bc413d45b61cb8f
   }
 
   Future<void> loadWeather(String city) async {
