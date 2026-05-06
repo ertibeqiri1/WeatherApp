@@ -48,7 +48,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-# Auto-generated Android build config (updated by flutter pub get)
-android/build.gradle.kts
-android/settings.gradle.kts
