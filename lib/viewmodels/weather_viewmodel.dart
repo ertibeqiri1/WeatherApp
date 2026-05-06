@@ -20,6 +20,7 @@ class WeatherViewModel extends ChangeNotifier {
   List<DailyForecastModel> _dailyForecast = [];
   String _errorMessage = '';
   int _selectedTabIndex = 0;
+  bool _isCelsius = true;
 
   WeatherStatus get status => _status;
   Weather? get currentWeather => _currentWeather;
@@ -27,10 +28,23 @@ class WeatherViewModel extends ChangeNotifier {
   List<DailyForecastModel> get dailyForecast => _dailyForecast;
   String get errorMessage => _errorMessage;
   int get selectedTabIndex => _selectedTabIndex;
+  bool get isCelsius => _isCelsius;
+  String get unitLabel => _isCelsius ? '°C' : '°F';
 
   bool get isLoading => _status == WeatherStatus.loading;
   bool get hasError => _status == WeatherStatus.error;
   bool get hasData => _status == WeatherStatus.success;
+
+  /// Converts a Celsius value to the currently selected unit.
+  double convertTemp(double celsius) {
+    if (_isCelsius) return celsius;
+    return (celsius * 9 / 5) + 32;
+  }
+
+  void toggleUnits() {
+    _isCelsius = !_isCelsius;
+    notifyListeners();
+  }
 
   Future<void> loadWeather(String city) async {
     _status = WeatherStatus.loading;
