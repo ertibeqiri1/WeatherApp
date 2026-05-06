@@ -24,7 +24,7 @@ dependencies:
   shared_preferences: ^2.3.3
 
   # Location services
-  geolocator: ^13.0.2
+  geolocator: ^14.0.0
 
   # Environment variables
   flutter_dotenv: ^5.2.1
