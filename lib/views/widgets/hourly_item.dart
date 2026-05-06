@@ -6,8 +6,16 @@ import '../../utils/weather_icon_helper.dart';
 class HourlyItem extends StatelessWidget {
   final HourlyForecastModel item;
   final bool isNow;
+  final double Function(double) convertTemp;
+  final String unitLabel;
 
-  const HourlyItem({super.key, required this.item, this.isNow = false});
+  const HourlyItem({
+    super.key,
+    required this.item,
+    required this.convertTemp,
+    required this.unitLabel,
+    this.isNow = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +47,7 @@ class HourlyItem extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          '${item.temperature.toInt()}°C',
+          '${convertTemp(item.temperature).toInt()}$unitLabel',
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,

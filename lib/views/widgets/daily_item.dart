@@ -6,8 +6,16 @@ import '../../utils/weather_icon_helper.dart';
 class DailyItem extends StatelessWidget {
   final DailyForecastModel item;
   final bool showDivider;
+  final double Function(double) convertTemp;
+  final String unitLabel;
 
-  const DailyItem({super.key, required this.item, this.showDivider = true});
+  const DailyItem({
+    super.key,
+    required this.item,
+    required this.convertTemp,
+    required this.unitLabel,
+    this.showDivider = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +45,7 @@ class DailyItem extends StatelessWidget {
               const Spacer(),
               // Low / High
               Text(
-                'L:${item.low.toInt()}°C / H:${item.high.toInt()}°C',
+                'L:${convertTemp(item.low).toInt()}$unitLabel / H:${convertTemp(item.high).toInt()}$unitLabel',
                 style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.textSecondary,

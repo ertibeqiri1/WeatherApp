@@ -142,7 +142,9 @@ class _HomeScreenState extends State<HomeScreen>
 
         // Current temperature — large
         Text(
-          '${weather?.temperature.toInt() ?? '—'}°C',
+          weather != null
+              ? '${vm.convertTemp(weather.temperature).toInt()}${vm.unitLabel}'
+              : '—',
           style: const TextStyle(
             fontSize: 72,
             fontWeight: FontWeight.w300,
@@ -155,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen>
         // High / Low
         Text(
           today != null
-              ? '${today.high.toInt()}°C / ${today.low.toInt()}°C'
+              ? '${vm.convertTemp(today.high).toInt()}${vm.unitLabel} / ${vm.convertTemp(today.low).toInt()}${vm.unitLabel}'
               : '—/—',
           style: const TextStyle(
             fontSize: 16,
@@ -241,6 +243,8 @@ class _HomeScreenState extends State<HomeScreen>
       itemBuilder: (_, i) => HourlyItem(
         item: items[i],
         isNow: i == 0,
+        convertTemp: vm.convertTemp,
+        unitLabel: vm.unitLabel,
       ),
     );
   }
@@ -262,6 +266,8 @@ class _HomeScreenState extends State<HomeScreen>
       itemBuilder: (_, i) => DailyItem(
         item: items[i],
         showDivider: i < items.length - 1,
+        convertTemp: vm.convertTemp,
+        unitLabel: vm.unitLabel,
       ),
     );
   }

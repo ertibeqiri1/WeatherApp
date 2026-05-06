@@ -45,6 +45,8 @@ class _WeatherDrawerState extends State<WeatherDrawer> {
               _buildHeader(context),
               const SizedBox(height: 32),
               _buildSearchSection(context),
+              const SizedBox(height: 32),
+              _buildUnitsSection(context),
             ],
           ),
         ),
@@ -75,6 +77,84 @@ class _WeatherDrawerState extends State<WeatherDrawer> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildUnitsSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Temperature Unit',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Consumer<WeatherViewModel>(
+            builder: (context, vm, _) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: AppColors.inputBackground,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.inputBorder),
+                ),
+                child: Row(
+                  children: [
+                    _unitButton(
+                      label: '°C',
+                      isActive: vm.isCelsius,
+                      onTap: () {
+                        if (!vm.isCelsius) vm.toggleUnits();
+                      },
+                    ),
+                    _unitButton(
+                      label: '°F',
+                      isActive: !vm.isCelsius,
+                      onTap: () {
+                        if (vm.isCelsius) vm.toggleUnits();
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _unitButton({
+    required String label,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: isActive ? AppColors.tabActive : Colors.transparent,
+            borderRadius: BorderRadius.circular(11),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: isActive ? AppColors.textPrimary : AppColors.textMuted,
+            ),
+          ),
+        ),
       ),
     );
   }
